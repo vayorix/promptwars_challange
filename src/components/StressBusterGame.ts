@@ -117,10 +117,10 @@ export class StressBusterGame {
             const isPopped = this.poppedBalloons.includes(b.id);
             if (isPopped) return '';
             return `
-              <button 
+               <button 
                 class="worry-balloon" 
                 id="${b.id}"
-                style="background-color: ${b.color}; left: ${b.x}%; bottom: ${b.y}%;"
+                style="background-color: ${b.color}; left: ${b.x}%; bottom: 0px; transform: translate3d(0, -${(b.y / 100) * 250}px, 0);"
                 aria-label="Worry balloon: ${b.text}. Click to pop."
               >
                 <span class="balloon-text">${b.text}</span>
@@ -234,11 +234,11 @@ export class StressBusterGame {
       });
 
       if (changed) {
-        // Update DOM element positions directly for performance (60fps)
+        // Update DOM element transforms directly on the GPU compositor (60fps)
         this.activeBalloons.forEach(b => {
           const el = this.container.querySelector(`#${b.id}`) as HTMLElement;
           if (el) {
-            el.style.bottom = `${b.y}%`;
+            el.style.transform = `translate3d(0, -${(b.y / 100) * 250}px, 0)`;
             el.style.left = `${b.x}%`;
           }
         });

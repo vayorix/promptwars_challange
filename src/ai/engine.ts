@@ -53,7 +53,6 @@ async function callGemini(journalText: string, apiKey: string): Promise<Analysis
     const parsed: AnalysisResult = JSON.parse(rawText.trim());
     return parsed;
   } catch (err) {
-    console.error('Failed to parse Gemini output as JSON. Raw output:', rawText);
     throw new Error('AI returned invalid JSON formatting. Please try again.');
   }
 }
@@ -234,7 +233,13 @@ function analyzeHeuristically(text: string): AnalysisResult {
 }
 
 /**
- * Main function to analyze a journal entry.
+ * Analyzes a student's journal entry. First matches against pre-seeded scenarios for
+ * instantaneous verification, otherwise calls the live Gemini API (if key is provided)
+ * or falls back to a smart heuristic mental wellness analysis model.
+ * 
+ * @param text The raw journal entry text written by the student.
+ * @param apiKey Optional API key passed from the UI. Falls back to environment variables.
+ * @returns A promise resolving to the final Scenario analysis state.
  */
 export async function analyzeJournal(text: string, apiKey?: string): Promise<Scenario> {
   // Check if this text matches any of the preseeded mock scenarios
@@ -244,14 +249,13 @@ export async function analyzeJournal(text: string, apiKey?: string): Promise<Sce
     }
   }
 
-  const activeKey = apiKey || (import.meta as any).env.VITE_GEMINI_API_KEY || '';
+  const activeKey = apiKey || import.meta.env.VITE_GEMINI_API_KEY || '';
 
   let result: AnalysisResult;
   if (activeKey && activeKey.trim() !== '') {
     try {
       result = await callGemini(text, activeKey);
     } catch (e) {
-      console.warn('Live Gemini call failed, falling back to heuristic engine:', e);
       result = analyzeHeuristically(text);
     }
   } else {

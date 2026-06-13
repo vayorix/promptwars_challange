@@ -1009,6 +1009,12 @@ header.app-header {
   margin-top: 4px;
 }
 
+.stress-buster-card,
+.resilience-timeline-container {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
+
 /* ====================================================
    🍃 THE MINDFUL PLAYROOM STYLING
    ==================================================== */
@@ -1292,3 +1298,200 @@ header.app-header {
   0% { transform: translateY(15px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
+
+/* ====================================================
+   📈 RESILIENCE HISTORY TIMELINE STYLING
+   ==================================================== */
+
+.timeline-trail {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  padding-left: 20px;
+  margin-top: 20px;
+}
+.timeline-trail::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.timeline-milestone {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.milestone-badge-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.milestone-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 2px solid var(--bg-color);
+  position: absolute;
+  left: -20px;
+  z-index: 2;
+  box-shadow: 0 0 0 4px var(--bg-color);
+}
+
+.milestone-date {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--secondary-color);
+  letter-spacing: 0.5px;
+}
+
+.milestone-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-left: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+}
+
+.milestone-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.milestone-avatar {
+  font-size: 1.5rem;
+}
+
+.milestone-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.milestone-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.milestone-sentiment {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.milestone-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+}
+@media (min-width: 600px) {
+  .milestone-metrics {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+.mini-metric {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  width: 70px;
+  font-weight: 500;
+}
+
+.mini-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mini-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.mini-val {
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 32px;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+/* ====================================================
+   🛡️ ACADEMIC RESILIENCE MATRIX STYLING
+   ==================================================== */
+
+.matrix-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+@media (min-width: 768px) {
+  .matrix-grid-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.matrix-item {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border-left: 3px solid var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+  transition: var(--transition-smooth);
+}
+.matrix-item:hover {
+  transform: translateY(-2px);
+  border-left-color: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(50, 42, 34, 0.04);
+}
+
+.matrix-domain {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  display: block;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.matrix-desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* Rendering deferment for matrix card */
+.resilience-matrix-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+

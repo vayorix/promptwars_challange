@@ -1,6 +1,11 @@
 import { stateManager, mockScenarios } from '../data/state';
 import { analyzeJournal } from '../ai/engine';
+import { escapeHTML } from '../utils/sanitize';
 
+/**
+ * Component for entering student journal entries, configuring the Gemini API key,
+ * and selecting from five pre-seeded academic distress scenarios.
+ */
 export class JournalEditor {
   private container: HTMLElement;
   private isAnalyzing: boolean = false;
@@ -10,9 +15,12 @@ export class JournalEditor {
     stateManager.subscribe(() => this.render());
   }
 
+  /**
+   * Renders the editor panel including API status, preset cards deck, and writing area.
+   */
   public render() {
     const state = stateManager.getState();
-    const hasEnvKey = !!((import.meta as any).env.VITE_GEMINI_API_KEY);
+    const hasEnvKey = !!(import.meta.env.VITE_GEMINI_API_KEY);
 
     this.container.innerHTML = `
       <section class="journal-editor-card glass-panel" aria-labelledby="journal-heading">
@@ -49,15 +57,15 @@ export class JournalEditor {
             ${Object.values(mockScenarios).map(sc => `
               <button 
                 class="preset-card ${state.currentScenario.id === sc.id ? 'active' : ''}" 
-                data-id="${sc.id}"
+                data-id="${escapeHTML(sc.id)}"
                 role="radio"
                 aria-checked="${state.currentScenario.id === sc.id}"
-                aria-label="Load scenario for ${sc.name}"
+                aria-label="Load scenario for ${escapeHTML(sc.name)}"
               >
-                <span class="preset-avatar" aria-hidden="true">${sc.avatar}</span>
+                <span class="preset-avatar" aria-hidden="true">${escapeHTML(sc.avatar)}</span>
                 <span class="preset-info">
-                  <strong class="preset-name">${sc.name}</strong>
-                  <span class="preset-tagline">${sc.tagline}</span>
+                  <strong class="preset-name">${escapeHTML(sc.name)}</strong>
+                  <span class="preset-tagline">${escapeHTML(sc.tagline)}</span>
                 </span>
               </button>
             `).join('')}
@@ -71,7 +79,7 @@ export class JournalEditor {
             placeholder="How are you feeling about your studies, exams, or workload today? Write freely..."
             rows="6"
             ${this.isAnalyzing ? 'disabled' : ''}
-          >${state.currentScenario.journalText}</textarea>
+          >${escapeHTML(state.currentScenario.journalText)}</textarea>
           
           <div class="editor-footer">
             <span id="word-count" class="word-count">0 words | 0 characters</span>
@@ -124,7 +132,7 @@ export class JournalEditor {
       analyzeBtn.addEventListener('click', async () => {
         const text = textarea.value.trim();
         if (!text) {
-          alert('Please write something in your journal first!');
+          this.showVisualToast('Please write something in your journal first!', true);
           return;
         }
 
@@ -136,8 +144,7 @@ export class JournalEditor {
           const scenario = await analyzeJournal(text, state.apiKey);
           stateManager.updateScenario(scenario);
         } catch (error: any) {
-          console.error(error);
-          alert(`Analysis Failed: ${error.message}`);
+          this.showVisualToast(`Analysis Failed: ${error.message}`, true);
         } finally {
           this.isAnalyzing = false;
           this.render();
@@ -153,6 +160,17 @@ export class JournalEditor {
         }
       });
     });
+  }
+
+  private showVisualToast(message: string, isError: boolean = false) {
+    const notification = document.createElement('div');
+    notification.className = 'toast';
+    if (isError) {
+      notification.style.background = 'var(--danger-color)';
+    }
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
   }
 
   private updateCounters() {

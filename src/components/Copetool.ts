@@ -1,4 +1,5 @@
 import { stateManager } from '../data/state';
+import { escapeHTML } from '../utils/sanitize';
 
 export class Copetool {
   private container: HTMLElement;
@@ -14,6 +15,12 @@ export class Copetool {
   }
 
   public render() {
+    // Memory safety: Clear active intervals when re-rendering to prevent leaks
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+    
     const state = stateManager.getState();
     const copes = state.currentScenario.copingMechanisms;
 
@@ -28,13 +35,13 @@ export class Copetool {
             
             <div class="copes-list">
               ${copes.map((c, i) => `
-                <div class="cope-item-card type-${c.type.toLowerCase()}">
+                <div class="cope-item-card type-${escapeHTML(c.type.toLowerCase())}">
                   <div class="cope-item-header">
-                    <span class="cope-type-badge">${c.type}</span>
-                    <span class="cope-duration">⏳ ${c.duration}</span>
+                    <span class="cope-type-badge">${escapeHTML(c.type)}</span>
+                    <span class="cope-duration">⏳ ${escapeHTML(c.duration)}</span>
                   </div>
-                  <h3 class="cope-item-title">${i + 1}. ${c.title}</h3>
-                  <p class="cope-item-desc">${c.description}</p>
+                  <h3 class="cope-item-title">${i + 1}. ${escapeHTML(c.title)}</h3>
+                  <p class="cope-item-desc">${escapeHTML(c.description)}</p>
                 </div>
               `).join('')}
             </div>

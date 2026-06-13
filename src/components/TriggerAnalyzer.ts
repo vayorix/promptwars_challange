@@ -1,4 +1,5 @@
 import { stateManager } from '../data/state';
+import { escapeHTML } from '../utils/sanitize';
 
 export class TriggerAnalyzer {
   private container: HTMLElement;
@@ -66,8 +67,8 @@ export class TriggerAnalyzer {
                   <p class="empty-lane-text">No stressors identified.</p>
                 ` : list.map(t => `
                   <div class="trigger-card ${getImpactClass(t.impact)}">
-                    <span class="trigger-name">${t.name}</span>
-                    <span class="trigger-impact-badge">${t.impact} Impact</span>
+                    <span class="trigger-name">${escapeHTML(t.name)}</span>
+                    <span class="trigger-impact-badge">${escapeHTML(t.impact)} Impact</span>
                   </div>
                 `).join('')}
               </div>
