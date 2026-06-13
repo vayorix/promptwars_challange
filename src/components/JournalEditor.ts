@@ -143,8 +143,9 @@ export class JournalEditor {
           const state = stateManager.getState();
           const scenario = await analyzeJournal(text, state.apiKey);
           stateManager.updateScenario(scenario);
-        } catch (error: any) {
-          this.showVisualToast(`Analysis Failed: ${error.message}`, true);
+        } catch (error: unknown) {
+          const msg = error instanceof Error ? error.message : String(error);
+          this.showVisualToast(`Analysis Failed: ${msg}`, true);
         } finally {
           this.isAnalyzing = false;
           this.render();
